@@ -1,0 +1,26 @@
+<%- include('header.ejs', {name : name})%>
+
+<body>
+  <br/>
+
+  <br/>
+  <div class="container">
+    <header>
+      <h5 >Ajouter un mémo</h2>
+      </header>
+      <form class="Formulaire" action="/Memo" method="post">
+        <div class="form-group">
+          <label for="Nom">Titre</label>
+          <input type="text" class="form-control" id="name" name="Nom">
+        </div>
+        <div class="form-group">
+          <label for="Message">Contenu</label>
+          <textarea class="form-control" id="msg" rows="3"  name="Message"></textarea>
+        </div>
+        <input type="submit" class="btn btn-success"  value="Sauvegarder">
+      </form>
+    </div>
+
+
+
+  </body>

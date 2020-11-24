@@ -1,0 +1,26 @@
+
+<body>
+  <%- include('header.ejs', {name : name})%>
+
+  <body>
+
+    <header>
+      <% if(name !== undefined) {%>
+        <h1>Bonjour  <%=name%> </h1>
+        <%}else{%>
+          <h1>Veuillez vous inscrire</h1>
+          <%}%>
+          <h2>Mémo</h2>
+        </header>
+
+
+        <%- include('page1.ejs', {result : result})%>
+
+
+        <footer class="Copyright">
+          <p>Copyright Ananttan - Tous droits réservés<br />
+            <a href="mailto:ananttan.kanageswaran@gmail.com?subject=feedback">Me contacter !</a></p>
+          </footer>
+
+        </body>
+        </html>

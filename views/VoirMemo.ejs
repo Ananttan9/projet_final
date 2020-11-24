@@ -1,0 +1,236 @@
+
+<body>
+  <%- include('header.ejs', {name : name})%>
+  <div class="d-flex bd-highlight">
+    <div class="w-100 p-3 bd-highlight">
+      <% if(result) { %>
+        <% var length = []%>
+        <div class="container">
+          <%for (i = 0; i < result.length; i++) {
+            length.push(result[i].id)
+            %>
+            <div class="card mt-4" id=<%=result[i].id%>>
+              <div class="card-header">
+                <%= result[i].Nom%>
+              </div>
+              <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                  <p><%= result[i].Message %></p>
+                </blockquote>
+                <form method="POST" action='/deleteMemo'>
+                  <input type="hidden" name="idMemo" value=<%= result[i].id%>>
+                  <input type="submit" class="btn btn-danger" value="Supprimer">
+                </form>
+                <form method="GET" action='/shareThis'>
+                  <input type="hidden" name="idMemo" value=<%= result[i].Nom%>>
+                </form>
+                <input type='hidden' name='memo' value=<%=result[i]%>>
+                <button type="submit" id="share<%=result[i].id%>"  name=<%=result[i].id%> class="btn btn-success">Partager</button>
+                <button type="submit"  id="change<%=result[i].id%>"   name=<%=result[i].id%> class="btn btn-primary">Modifier</button>
+
+              </div>
+            </div>
+            <%}%>
+          </div>
+          <%}else { %>
+            <h5>pas de memo</h5>
+            <% } %>
+            <br/>
+
+            <br/>
+            <div class="container">
+              <header>
+                <h5 >Ajouter un mémo</h5>
+              </header>
+              <form action="/Memo" method="post">
+                <div class="form-group">
+                  <label for="Nom">Titre</label>
+                  <input type="text" class="form-control" id="name" name="Nom">
+                </div>
+                <div class="form-group">
+                  <label for="Message">Contenu</label>
+                  <textarea class="form-control" id="msg" rows="3"  name="Message"></textarea>
+                </div>
+                <input type="submit" class="btn btn-success"  value="Sauvegarder">
+              </form>
+            </div>
+          </div>
+          <div class="w-50 p-3 flex-shrink-1 bd-highlight" id='toto' hidden='true'>
+            <div class="card mt-4">
+              <div class="card-header">
+                Utilisateurs
+              </div>
+
+              <form id='form' action="/share" method="POST">
+                <% if (users) {
+                  for (let i = 0; i < users.length; i++){ %>
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="<%=users[i].id%>"" name=<%=users[i].id%>>
+                          <label class="form-check-label" for=<%=users[i].id%>>
+                            <%=users[i].Utilisateur%>
+                          </label>
+                        </div>
+                      </li>
+                      <li class="list-group-item">
+                      </li>
+                      <% }%>
+                      <button type='button' id='validate' class="btn btn-success">Valider</button>
+                      <%}else{}%>
+                    </ul>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <footer class="Copyright">
+              <p>Copyright Ananttan - Tous droits réservés<br />
+                <a href="mailto:ananttan.kanageswaran@gmail.com?subject=feedback">Me contacter !</a></p>
+              </footer>
+
+              <script type="text/javascript">
+                let resultID = "<%=length%>"
+                console.log(resultID)
+
+                resultID = resultID.split(',')
+
+                var shareArray = []
+                var changeArray = []
+
+                for(let i = 0 ; i < resultID.length; i++){
+                  let share = "share"+resultID[i]
+                  let tmp = document.getElementById(share)
+                  shareArray.push(tmp)
+                  let change = "change"+resultID[i]
+                  tmp = document.getElementById(change)
+                  changeArray.push(tmp)
+                }
+
+                console.log(changeArray)
+
+                const toto = document.getElementById('toto')
+                const form = document.getElementById('form')
+                const input = form.getElementsByTagName('input')
+                const a = document.getElementById('validate')
+
+
+
+
+                let createElement = (title, content, card, body) => {
+
+                  let titleArea = document.createElement('input')
+                  let contentArea = document.createElement('textarea')
+
+                  titleArea.id = 'titleAreaId'
+                  title.type  = 'text'
+                  titleArea.name = "title"
+                  titleArea.value = title
+                  titleArea.className = "form-control"
+                  contentArea.id = 'contentAreaId'
+                  contentArea.className = "form-control"
+                  contentArea.rows = "3"
+                  contentArea.name = "content"
+                  contentArea.value = content
+                  return [titleArea,contentArea ]
+                }
+
+                for(let i = 0; i < changeArray.length; i++){
+                  let button = changeArray[i]
+                  button.addEventListener('click', ()=>{
+                    console.log(button.id)
+                    let id  = button.id.split('e')[1]
+                    console.log(id)
+                    let card = document.getElementById(id)
+                    let content = card.getElementsByClassName('blockquote mb-0')[0]
+                    let title = card.getElementsByClassName('card-header')[0]
+                    let body = card.getElementsByClassName('card-body')[0]
+                    console.log(body)
+                    let array = createElement(title.innerText, content.innerText,card, body)
+                    body.replaceChild(array[1],content)
+                    card.replaceChild(array[0], title)
+                    let newButton = document.createElement('button')
+                    newButton.className = 'btn btn-success'
+                    newButton.innerText = 'Valider'
+                    card.appendChild(newButton)
+                    newButton.addEventListener('click', ()=>{
+                      let newForm = document.createElement('form')
+                      newForm.appendChild(array[0])
+                      newForm.appendChild(array[1])
+                      newForm.method = "POST"
+                      newForm.action = "/UpdateMemo"
+                      let tmp = document.createElement('input')
+                      tmp.type = 'hidden'
+                      tmp.name = 'memoId'
+                      tmp.value = id
+                      newForm.appendChild(tmp)
+                      document.body.appendChild(newForm)
+                      newForm.submit()
+
+                    })
+                  })
+
+                }
+
+
+
+
+
+
+
+
+
+                let array = []
+                let addToArray =() =>{
+                  array = []
+                  for(let i = 0; i < input.length; i++){
+                    if (input[i].checked == true){
+                      array.push(input[i].name)
+                    }
+                  }
+                }
+
+                for(let i = 0; i < shareArray.length; i++){
+                  shareArray[i].addEventListener('click', () => {
+                    console.log('hqhq')
+                    if (toto.hidden === true){
+                      let val = document.createElement('input')
+                      val.type = 'hidden'
+                      val.name = 'idMemo'
+                      val.id = 'idMemo'
+                      val.value = shareArray[i].name
+                      console.log(val)
+                      form.appendChild(val)
+                      toto.hidden = false
+                      shareArray[i].className = 'btn btn-danger'
+                      shareArray[i].innerText = 'Annuler'
+                    }
+                    else {
+                      toto.hidden = true
+                      let first = document.getElementById('idMemo')
+                      let second = document.getElementById('values')
+                      form.removeChild(first)
+                      form.removeChild(second)
+                      shareArray[i].className = 'btn btn-success'
+                      shareArray[i].innerText = 'Partager'
+                    }
+                  })
+                }
+                let addValues = () => {
+                  var val = document.createElement("input");
+                  val.type = 'hidden'
+                  val.name = "values"
+                  val.id = 'values'
+                  val.value = array
+                  form.appendChild(val);
+                }
+
+                validate.addEventListener('click', () => {
+                  addToArray()
+                  console.log(array)
+                  addValues()
+                  form.submit()
+                })
+              </script>
+            </body>
+
+            </html>

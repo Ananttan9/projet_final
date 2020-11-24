@@ -1,0 +1,29 @@
+
+
+<body>
+  <%- include('header.ejs', {name : undefined})%>
+
+  <div class="container">
+
+    <header>
+      <h2 class="Titre">Connexion</h2>
+    </header>
+    <form action="/Identification" method="post">
+      <div class="form-group">
+        <label for="name">Nom</label>
+        <input type="text" name="user_name" class="form-control" id="naame" aria-describedby="emailHelp">
+      </div>
+      <div class="form-group">
+        <label for="Mdp">Mot de passe</label>
+        <input type="password" type="password" id="Mdp" name="Mot_de_passe" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+  </div>
+  <footer class="Copyright">
+    <p>Copyright Ananttan - Tous droits réservés<br />
+      <a href="mailto:ananttan.kanageswaran@gmail.com?subject=feedback">Me contacter !</a></p>
+    </footer>
+
+  </body>
+  </html>
